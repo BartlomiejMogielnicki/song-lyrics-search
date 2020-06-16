@@ -70,13 +70,16 @@ form {
     width: 100%
 }
 
-.search-btn {
+.btn {
     background-color: #6765A6;
     color: white;
+    cursor: pointer;
+}
+
+.search-btn {
     position: absolute;
     top: 2px;
     right: 2px;
-    cursor: pointer;
 }
 
 .container {
@@ -84,4 +87,31 @@ form {
     margin: 20px auto;
     text-align: center;
     font-size: 1.1em;
+}
+
+.songs {
+    width: 100%;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.songs li {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 5px;
+    list-style: none;
+}
+
+.lyrics-btn {
+    padding: 5px 10px;
+    font-size: .8em;
+}
+
+.change-btn {
+    padding: 5px 20px;
 }
