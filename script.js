@@ -5,6 +5,13 @@ const nextReultsContainer = document.getElementById('more-results');
 
 let searchValue = "";
 
+// Get more songs
+const getMoreSongs = async (url) => {
+    const response = await fetch(`https://cors-anywhere.herokuapp.com/${url}`);
+    const data = await response.json();
+    updateResults(data);
+}
+
 // Update DOM with search results
 const updateResults = (data) => {
     const output = document.createElement('ul');
@@ -27,8 +34,8 @@ const updateResults = (data) => {
     // Check if there more than 15 songs
     if (data.next || data.prev) {
         nextReultsContainer.innerHTML = `
-        ${data.prev ? `<button class='btn change-btn'>Prev</button>` : ''}
-        ${data.next ? `<button class='btn change-btn'>Next</button>` : ''}
+        ${data.prev ? `<button class='btn change-btn' onclick="getMoreSongs('${data.prev}')">Prev</button>` : ''}
+        ${data.next ? `<button class='btn change-btn' onclick="getMoreSongs('${data.next}')">Next</button>` : ''}
         `
     } else {
         nextReultsContainer.innerHTML = '';
@@ -50,6 +57,11 @@ search.addEventListener('input', () => {
 
 searchBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    searchSong();
-    search.value = "";
+
+    if (searchValue === "") {
+        alert('Please enter artist or song name')
+    } else {
+        searchSong();
+        search.value = "";
+    }
 });
