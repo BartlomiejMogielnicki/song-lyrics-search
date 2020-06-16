@@ -1,7 +1,7 @@
 const search = document.getElementById('search');
 const searchBtn = document.getElementById('search-btn');
 const resultsContainer = document.getElementById('results');
-const nextReultsContainer = document.getElementById('more-results');
+const nextResultsContainer = document.getElementById('more-results');
 
 let searchValue = "";
 
@@ -21,7 +21,7 @@ const updateResults = (data) => {
         result.innerHTML = `
         <li>
         <span><strong>${item.artist.name}</strong> - ${item.title}</span>
-        <button class="btn lyrics-btn">Get Lyrics</button>
+        <button class="btn lyrics-btn" data-artist="${item.artist.name}" data-title="${item.title}">Get Lyrics</button>
         </li>
         `
 
@@ -33,12 +33,12 @@ const updateResults = (data) => {
 
     // Check if there more than 15 songs
     if (data.next || data.prev) {
-        nextReultsContainer.innerHTML = `
+        nextResultsContainer.innerHTML = `
         ${data.prev ? `<button class='btn change-btn' onclick="getMoreSongs('${data.prev}')">Prev</button>` : ''}
         ${data.next ? `<button class='btn change-btn' onclick="getMoreSongs('${data.next}')">Next</button>` : ''}
         `
     } else {
-        nextReultsContainer.innerHTML = '';
+        nextResultsContainer.innerHTML = '';
     }
 }
 
@@ -46,8 +46,22 @@ const updateResults = (data) => {
 const searchSong = async () => {
     const response = await fetch(`https://api.lyrics.ovh/suggest/${searchValue}`)
     const data = await response.json();
-
     updateResults(data);
+}
+
+// Get song lyrics
+const getLyrics = async (artist, title) => {
+    const response = await fetch(`https://api.lyrics.ovh/v1/${artist}/${title}`)
+    const data = await response.json();
+
+    const lyrics = data.lyrics.replace(/(\r\n|\r|\n)/g, '<br>');
+
+    resultsContainer.innerHTML = `
+    <h2>${artist} - ${title}</h2>
+    <p>${lyrics}</p>
+    `
+
+    nextResultsContainer.innerHTML = '';
 }
 
 // Event listeners
@@ -65,3 +79,13 @@ searchBtn.addEventListener('click', (e) => {
         search.value = "";
     }
 });
+
+resultsContainer.addEventListener('click', (e) => {
+    const target = e.target;
+
+    if (target.type === 'submit') {
+        const artist = target.getAttribute('data-artist')
+        const title = target.getAttribute('data-title')
+        getLyrics(artist, title);
+    }
+})
